@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const teacherSchema = mongoose.Schema(
+const teacherSchema = new mongoose.Schema(
   {
     teacher_code: {
       type: String,
@@ -15,6 +15,13 @@ const teacherSchema = mongoose.Schema(
 
     degree: {
       type: String,
+      required: true,
+    },
+
+    // danh phận
+    identity: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },
