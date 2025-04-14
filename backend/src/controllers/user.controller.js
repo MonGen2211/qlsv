@@ -1,7 +1,9 @@
 import cloudinary from "../lib/cloudinary.js";
-import { generateToken } from "../lib/utils.js";
+import { generateToken, getStudentCode, getTeacherCode } from "../lib/utils.js";
+import { Student } from "../models/student.model.js";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import { Teacher } from "../models/teacher.model.js";
 export const createUser = async (req, res) => {
   const { fullname, email, password, role } = req.body;
   try {
@@ -26,6 +28,11 @@ export const createUser = async (req, res) => {
     const salt = bcrypt.genSaltSync(10);
     const hashPassword = bcrypt.hashSync(password, salt);
 
+    // get student_code
+    const student_code = await getStudentCode();
+    // get teacher_code
+    const teacher_code = await getTeacherCode();
+
     // save database
     const newUser = new User({
       fullname,
@@ -35,7 +42,28 @@ export const createUser = async (req, res) => {
     });
 
     await newUser.save();
+    // create a Student if They are a Student
+    if (newUser.role === "student") {
+      const newStudent = new Student({
+        student_code,
+        major: "Information Technology",
+        class: "DCT120C1",
+        identity: newUser.role,
+      });
+      await newStudent.save();
+    }
 
+    if (newUser.role === "teacher") {
+      const newTeacher = new Teacher({
+        teacher_code,
+        department: "Information Technology",
+        degree: "Information Technology",
+        identity: newUser.role,
+      });
+      await newTeacher.save();
+    }
+
+    // create token
     await generateToken(newUser._id, res);
 
     res.status(201).json(newUser);

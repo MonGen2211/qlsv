@@ -1,19 +1,13 @@
 import mongoose from "mongoose";
 
-const courseSchema = mongoose.Schema({
+const courseSchema = new mongoose.Schema({
   student_code: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Student",
     required: true,
   },
 
-  subject_name: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Subject",
-    required: true,
-  },
-
-  number_of_credit: {
+  subject_code: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Subject",
     required: true,

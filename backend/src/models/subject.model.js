@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const subjectSchema = mongoose.Schema({
+const subjectSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -11,3 +11,4 @@ const subjectSchema = mongoose.Schema({
     required: true,
   },
 });
+export const Subject = mongoose.model("Subject", subjectSchema);
