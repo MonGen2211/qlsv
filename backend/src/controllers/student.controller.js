@@ -23,7 +23,6 @@ export const getStudent = async (req, res) => {
     // });
 
     // * Logic true but Code true
-
     const student = await Student.aggregate([
       // 1. Join bảng "users" vào trường "identity"
       {
