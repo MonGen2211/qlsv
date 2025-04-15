@@ -40,7 +40,6 @@ export const createUser = async (req, res) => {
       password: hashPassword,
       role: role || "student",
     });
-
     await newUser.save();
     // create a Student if They are a Student
     if (newUser.role === "student") {

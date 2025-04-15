@@ -8,11 +8,13 @@ const teacherSchema = new mongoose.Schema(
       unique: true,
     },
 
+    // khoa
     department: {
       type: String,
       required: true,
     },
 
+    // chuyên ngành
     degree: {
       type: String,
       required: true,
