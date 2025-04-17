@@ -1,33 +1,32 @@
 import mongoose from "mongoose";
+import { User } from "./user.model.js";
 
-const studentSchema = new mongoose.Schema(
-  {
-    student_code: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-
-    major: {
-      type: String,
-      required: true,
-    },
-
-    class: {
-      type: String,
-      required: true,
-    },
-
-    // danh phận
-    identity: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+const userSchema = new mongoose.Schema({
+  major: {
+    type: String,
+    default: "",
   },
-  {
-    timestamps: true,
-  }
-);
 
-export const Student = mongoose.model("Student", studentSchema);
+  student_code: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+
+  class: {
+    type: String,
+    required: true,
+  },
+
+  birthday: {
+    type: String,
+    default: "01/01/2025",
+  },
+
+  gender: {
+    type: String,
+    default: "",
+  },
+});
+
+export const Student = User.discriminator("Student", userSchema);

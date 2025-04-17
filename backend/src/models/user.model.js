@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+const option = {
+  discriminatorKey: "role", // thêm trường 'role' để phân biệt loại user
+  collection: "users", // tất cả user/teacher được lưu vào cùng một collection
+  timestamps: true,
+};
+
 const userSchema = new mongoose.Schema(
   {
     fullname: {
@@ -22,19 +28,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-
-    role: {
-      type: String,
-      enum: ["student", "teacher", "admin"],
-      default: "student",
-
-      // 1 là học sinh
-      // 2 là giảng viên
-    },
   },
-  {
-    timestamps: true,
-  }
+  option
 );
 
 export const User = mongoose.model("User", userSchema);
