@@ -15,9 +15,15 @@ export const generateToken = async (userId, res) => {
 };
 
 export const studentCode = async () => {
-  const users = await User.find();
+  const users = await User.find({ role: "Student" });
   const student_code = 3120411178 + Number(users.length);
   return student_code.toString();
+};
+
+export const teacherCode = async (req, res) => {
+  const users = await User.find({ role: "Teacher" });
+  const teacher_code = 2000 + Number(users.length);
+  return teacher_code.toString();
 };
 
 export const getRandomClass = () => {
