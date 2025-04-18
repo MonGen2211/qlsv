@@ -1,10 +1,19 @@
-import { generateToken, getRandomClass, studentCode } from "../lib/util.js";
+import jwt from "jsonwebtoken";
+import cloudinary from "../lib/cloudinary.js";
+import {
+  generateToken,
+  getRandomClass,
+  studentCode,
+  teacherCode,
+} from "../lib/util.js";
+import { Department } from "../models/department.model.js";
 import { Student } from "../models/student.model.js";
+import { Teacher } from "../models/teacher.model.js";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
-  const { email, fullname, password, role } = req.body;
+  const { email, fullname, password, role, department, degree } = req.body;
   try {
     // check valid
     if (!email || !fullname || !password) {
@@ -27,11 +36,11 @@ export const signup = async (req, res) => {
     const hashPassword = bcrypt.hashSync(password, salt);
 
     // get student_code
-    const student_code = await studentCode();
-    console.log(student_code);
     const Class = getRandomClass();
-    const identity = role || "student";
-    if (identity === "student") {
+    const identity = role || "Student";
+    if (identity === "Student") {
+      const student_code = await studentCode();
+
       const newStudent = new Student({
         fullname,
         email,
@@ -45,6 +54,24 @@ export const signup = async (req, res) => {
       generateToken(newStudent._id, res);
       res.status(201).json(newStudent);
     }
+
+    if (identity === "Teacher") {
+      const teacher_code = await teacherCode();
+
+      const newTeacher = new Teacher({
+        fullname,
+        email,
+        password: hashPassword,
+        teacher_code,
+        department,
+        degree,
+      });
+
+      await newTeacher.save();
+
+      generateToken(newTeacher._id, res);
+      res.status(201).json(newTeacher);
+    }
   } catch (error) {
     console.log("Error in signup contronller", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -54,9 +81,57 @@ export const signup = async (req, res) => {
 export const updateProfilefic = async (req, res) => {
   const { profilefic } = req.body;
   try {
-    // const updateUser =
+    const userId = req.user._id.toString();
+
+    const uploadImage = await cloudinary.uploader.upload(profilefic);
+    const responseImg = uploadImage.secure_url;
+
+    const updateUser = await User.findByIdAndUpdate(
+      userId,
+      { profilefic: responseImg },
+      { new: true }
+    );
+
+    res.status(200).json(updateUser);
   } catch (error) {
     console.log("Error in updateProfilefic controller: ", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    if (!email || !password) {
+      res.status(400).json({ message: "Please fill all provided" });
+    }
+
+    // check email
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      res.status(400).json({ message: "Email doses not have in database" });
+    }
+
+    const isPassword = bcrypt.compareSync(password, user.password);
+    if (!isPassword) {
+      res.status(400).json({ message: "password was wrong" });
+    }
+
+    generateToken(user._id, res);
+    res.status(200).json(user);
+  } catch (error) {
+    console.log("Error in Login controller:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    res.cookie("jwt", "", { maxAge: 0 });
+    return res.status(200).json({ message: "Logou Successfully" });
+  } catch (error) {
+    console.log("Error in Logout Controller:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
