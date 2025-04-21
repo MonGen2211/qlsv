@@ -1,24 +1,23 @@
 import jwt from "jsonwebtoken";
 import cloudinary from "../lib/cloudinary.js";
 import {
+  adminCode,
   generateToken,
   getRandomClass,
   studentCode,
   teacherCode,
 } from "../lib/util.js";
-import { Department } from "../models/department.model.js";
 import { Student } from "../models/student.model.js";
 import { Teacher } from "../models/teacher.model.js";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import { Admin } from "../models/admin.model.js";
+import { Department } from "../models/department.model.js";
 
 export const signup = async (req, res) => {
   const { email, fullname, password, role, department, degree } = req.body;
   try {
     // check valid
-    if (!email || !fullname || !password) {
-      res.status(400).json({ message: "Please fill full provided" });
-    }
 
     // check email exists
     const user = await User.findOne({ email });
@@ -35,18 +34,17 @@ export const signup = async (req, res) => {
     const salt = bcrypt.genSaltSync(10);
     const hashPassword = bcrypt.hashSync(password, salt);
 
-    // get student_code
-    const Class = getRandomClass();
     const identity = role || "Student";
     if (identity === "Student") {
       const student_code = await studentCode();
-
+      const Class = getRandomClass();
       const newStudent = new Student({
         fullname,
         email,
         password: hashPassword,
         student_code,
         class: Class,
+        department,
       });
 
       await newStudent.save();
@@ -65,12 +63,29 @@ export const signup = async (req, res) => {
         teacher_code,
         department,
         degree,
+        department,
       });
 
       await newTeacher.save();
 
       generateToken(newTeacher._id, res);
       res.status(201).json(newTeacher);
+    }
+
+    if (identity === "Admin") {
+      const admin_code = await adminCode();
+
+      const newAdmin = new Admin({
+        fullname,
+        email,
+        password: hashPassword,
+        admin_code,
+      });
+
+      await newAdmin.save();
+
+      generateToken(newAdmin._id, res);
+      res.status(201).json(newAdmin);
     }
   } catch (error) {
     console.log("Error in signup contronller", error);
