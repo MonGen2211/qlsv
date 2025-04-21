@@ -27,6 +27,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Department", // Tham chiếu tới collection Department
+    required: true,
+  },
 });
 
 export const Student = User.discriminator("Student", userSchema);

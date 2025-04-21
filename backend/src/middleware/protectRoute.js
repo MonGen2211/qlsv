@@ -18,3 +18,18 @@ export const protectRoute = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const requireAdmin = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    if (user.role !== "Admin") {
+      res.status(403).json({ message: "Unauthornized - You must be a Admin" });
+    }
+
+    next();
+  } catch (error) {
+    console.log("Error requireAdmin middleware: ", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
