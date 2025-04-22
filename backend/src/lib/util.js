@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 import { Subject } from "../models/subject.model.js";
+import { Course } from "../models/course.model.js";
 export const generateToken = async (userId, res) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: "7d",
@@ -37,6 +38,12 @@ export const subjectCode = async (req, res) => {
   const subjects = await Subject.find({});
 
   return subjects.length.toString();
+};
+
+export const getCourseCode = async (req, res) => {
+  const courses = await Course.find({});
+  const courses_code = 1000 + Number(courses.length);
+  return courses_code.toString();
 };
 
 export const getRandomClass = () => {

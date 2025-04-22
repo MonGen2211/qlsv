@@ -33,3 +33,37 @@ export const requireAdmin = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const requireStudent = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    if (user.role !== "Student") {
+      res
+        .status(403)
+        .json({ message: "Unauthornized - You must be a Student" });
+    }
+
+    next();
+  } catch (error) {
+    console.log("Error in requireStudent Controller", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const requireStudentOrAdmin = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    if (user.role !== "Student" || user.role !== "Admin") {
+      res
+        .status(403)
+        .json({ message: "Unauthornized - You must be a Student or Admin" });
+    }
+
+    next();
+  } catch (error) {
+    console.log("Error in requireStudentOrAdmin Controller", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
