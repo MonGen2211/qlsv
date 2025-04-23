@@ -32,7 +32,7 @@ export const getDepartment = async (req, res) => {
 
     res.status(200).json(departments);
   } catch (error) {
-    console.log("Error in createDepartment Controller:", error);
+    console.log("Error in createDepartment Controller:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

@@ -33,19 +33,58 @@ export const createSubject = async (req, res) => {
 export const getSubject = async (req, res) => {
   const data = req.query.data;
   try {
-    if (data) {
-      const subjects = await Subject.find({
-        $or: [
-          { name: { $regex: new RegExp(data, "i") } },
-          { subject_code: data },
-        ],
-      });
+    const page = parseInt(req.query.page) || 1;
+    const item_per_page = parseInt(req.query.item_per_page) || 4;
 
-      res.status(200).json(subjects);
+    const skip = (page - 1) * item_per_page;
+
+    if (data) {
+      const [subjects, total] = await Promise.all([
+        Subject.find({
+          $or: [
+            { name: { $regex: new RegExp(data, "i") } },
+            { subject_code: data },
+          ],
+        })
+          .skip(skip)
+          .limit(item_per_page),
+        Subject.countDocuments(),
+      ]);
+      Subject.countDocuments();
+
+      const totalPages = Math.ceil(total / item_per_page);
+
+      return res.status(200).json({
+        data: subjects,
+        pagination: {
+          total,
+          totalPages,
+          currentPage: page,
+          item_per_page,
+        },
+      });
     }
 
-    const subjects = await Subject.find({});
-    res.status(200).json(subjects);
+    const [subjects, total] = await Promise.all([
+      Subject.find().skip(skip).limit(item_per_page),
+      Subject.countDocuments(),
+    ]);
+
+    const totalPages = Math.ceil(total / item_per_page);
+
+    if (page > totalPages) {
+      res.status(400).json({ message: "Do not have any subject on this page" });
+    }
+    Subject.countDocuments();
+    return res.status(200).json({
+      data: subjects,
+      pagination: {
+        total,
+        totalPages,
+        currentPage: page,
+        item_per_page,
+      },
+    });
   } catch (error) {
     console.log("Error in getSubject controller:", error.message);
     res.status(500).json({ message: "Internal Server Error" });

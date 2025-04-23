@@ -39,31 +39,61 @@ export const createCourse = async (req, res) => {
 
 export const getCourse = async (req, res) => {
   const data = req.query.data;
-  try {
-    if (data) {
-      const teacher = (await Teacher.findById(data)) || null;
-      const subject = (await Subject.findById(data)) || null;
 
-      const teacher_id = teacher !== null ? teacher._id : null;
-      const subject_id = subject !== null ? subject._id : null;
+  try {
+    const page = parseInt(req.query.page) || 1; // data = phan tấn quốc
+    const item_per_page = parseInt(req.query.page) || 2; // data = phan tấn quốc
+    const skip = (page - 1) * item_per_page;
+
+    if (data) {
+      const teacher = await Teacher.findById(data);
+      const subject = await Subject.findById(data);
+
+      // todo: try teacher.?_id in line 56
+
+      const [courses, total] = await Promise.all([
+        Course.find({
+          $or: [{ teacher_code: teacher?._id }, { subject_code: subject?._id }],
+        })
+          .skip(skip)
+          .limit(item_per_page),
+
+        Course.countDocuments(),
+      ]);
 
       if (teacher === null && subject === null) {
         res.status(400).json({ message: "No course have teacher or subject " });
       }
 
-      const course = await Course.find({
-        $or: [{ teacher_code: teacher_id }, { subject_code: subject_id }],
-      })
-        .populate("teacher_code", "-_id")
-        .populate("subject_code", "-_id");
+      const totalPages = Math.ceil(total / item_per_page);
 
-      res.status(200).json(course);
+      return res.status(200).json({
+        data: courses,
+        pagination: {
+          total,
+          totalPages,
+          currentPage: page,
+          item_per_page,
+        },
+      });
     }
 
-    const courses = await Course.find({})
-      .populate("teacher_code", "-_id")
-      .populate("subject_code", "-_id");
-    res.status(200).json(courses);
+    const [courses, total] = await Promise.all([
+      Course.find({}).skip(skip).limit(item_per_page),
+      Subject.countDocuments(),
+    ]);
+
+    const totalPages = Math.ceil(total / item_per_page);
+
+    res.status(200).json({
+      data: courses,
+      pagination: {
+        total,
+        totalPages,
+        currentPage: page,
+        item_per_page,
+      },
+    });
   } catch (error) {
     console.log("Error in getCourse controller: ", error);
     res.status(500).json({ message: "Internal Server Error" });

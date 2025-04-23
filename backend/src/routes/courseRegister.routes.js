@@ -7,6 +7,7 @@ import {
 } from "../middleware/protectRoute.js";
 import {
   createCourseRegister,
+  DeleteCourseRegister,
   updateStatusCourse,
 } from "../controllers/courseRegister.controller.js";
 
@@ -18,7 +19,7 @@ router.delete(
   "/:id",
   protectRoute,
   requireStudentOrAdmin,
-  deleteCourseRegister
+  DeleteCourseRegister
 );
 
 export default router;
