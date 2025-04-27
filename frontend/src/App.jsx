@@ -5,12 +5,26 @@ import HomePage from "./pages/HomePage";
 import StudentPage from "./pages/Student/StudentPage";
 import SubjectPage from "./pages/Subject/SubjectPage";
 import CoursePage from "./pages/Course/CoursePage";
+import LoginPage from "./pages/Signin/LoginPage";
+import SginupPage from "./pages/Signin/SginupPage";
+import { useAuthStore } from "./store/useAuthStore";
+import { useEffect } from "react";
 
 function App() {
+  const { authUser, checkAuth } = useAuthStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  console.log(authUser);
   return (
     <>
       <Navbar />
       <Routes>
+        <Route path="/signup" element={<SginupPage />} />
+        <Route path="/login" element={<LoginPage />} />
+
         <Route path="/" element={<HomePage />} />
 
         {/* StudentPage */}
