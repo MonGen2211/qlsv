@@ -150,3 +150,17 @@ export const logout = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const checkAuth = async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(403).json({ message: "Urthorized" });
+    }
+
+    res.send(200).json(user);
+  } catch (error) {
+    console.log("Error in checkAuth Controller: ", error.message);
+    res.status(500).json({ message: "Iternal Server Error" });
+  }
+};

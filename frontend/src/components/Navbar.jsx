@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 const Navbar = () => {
   return (
@@ -191,6 +192,8 @@ const Navbar = () => {
           </Link>
         </div>
       </div>
+
+      <ToastContainer />
     </nav>
   );
 };
