@@ -1,28 +1,25 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import SginupPage from "./SginupPage";
-import { toast } from "react-toastify";
-// import { useAuthStore } from "../../store/useAuthStore";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const LoginPage = () => {
-  // const { login } = useAuthStore();
+  const { login } = useAuthStore();
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const validateForm = () => {
-    if (!formData.email.trim()) return toast.error("email is required");
-    if (!formData.password) return toast.error("password is required");
+  // const validateForm = () => {
+  //   if (!formData.email.trim()) return toast.error("email is required");
+  //   if (!formData.password) return toast.error("password is required");
 
-    return true;
-  };
+  //   return true;
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const success = validateForm();
-    if (success) alert(formData);
+    login(formData);
   };
 
   return (

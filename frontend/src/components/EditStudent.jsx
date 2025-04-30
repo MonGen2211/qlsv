@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
+import { useAuthStore } from "../store/useAuthStore";
 
-const EditStudent = () => {
+const EditStudent = ({ student }) => {
   const [isOpenModalEdit, setIsOpenModalEdit] = useState(false);
 
+  const { editStudent } = useAuthStore();
+
+  const [formData, setformData] = useState({
+    fullname: student.fullname,
+    birthday: student.birthday,
+    gender: student.gender,
+  });
   useEffect(() => {
     setIsOpenModalEdit(false);
   }, []);
+
+  const handleSubmit = () => {
+    editStudent(formData, student._id);
+  };
 
   return (
     <div>
@@ -42,7 +54,7 @@ const EditStudent = () => {
           </h2>
 
           {/* Form */}
-          <form className="space-y-4 text-left">
+          <form onSubmit={handleSubmit} className="space-y-4 text-left">
             <div>
               <label
                 htmlFor="fullName"
@@ -53,9 +65,12 @@ const EditStudent = () => {
               <input
                 type="text"
                 id="fullName"
-                required
+                value={formData.fullname}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Gen"
+                onChange={(e) =>
+                  setformData({ ...formData, fullname: e.target.value })
+                }
               />
             </div>
 
@@ -69,8 +84,11 @@ const EditStudent = () => {
               <input
                 type="date"
                 id="birthday"
-                required
+                value={formData.birthday}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                onChange={(e) =>
+                  setformData({ ...formData, birthday: e.target.value })
+                }
               />
             </div>
 
@@ -86,12 +104,14 @@ const EditStudent = () => {
                 name="gender"
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm 
                focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
+                value={formData.gender}
+                onChange={(e) =>
+                  setformData({ ...formData, gender: e.target.value })
+                }
               >
                 <option value="">-- Gender --</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Underfine</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
               </select>
             </div>
 

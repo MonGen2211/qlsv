@@ -1,8 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { useAuthStore } from "../store/useAuthStore";
 
 const Navbar = () => {
+  const { authUser, logout } = useAuthStore();
+  const navigate = useNavigate();
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout(); // xóa session/token trong store
+    navigate("/login"); // chuyển về trang login
+  };
+
   return (
     <nav className="bg-gray-800 mb-10">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -80,6 +89,41 @@ const Navbar = () => {
                   className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                 >
                   Course
+                </Link>
+                {/* authUser = null */}
+                <Link
+                  onClick={(e) => handleLogout(e)}
+                  className={`${
+                    authUser ? "" : "hidden"
+                  } rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white`}
+                >
+                  Logout
+                </Link>
+                <Link
+                  to="/course"
+                  className={`${
+                    authUser ? "" : "hidden"
+                  } rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white`}
+                >
+                  InfoSetting
+                </Link>
+
+                {/* authUser = {} */}
+                <Link
+                  to="/course"
+                  className={`${
+                    authUser ? "hidden" : ""
+                  } rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white`}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/course"
+                  className={`${
+                    authUser ? "hidden" : ""
+                  } rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white`}
+                >
+                  Signup
                 </Link>
               </div>
             </div>
@@ -189,6 +233,13 @@ const Navbar = () => {
             className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
           >
             Course
+          </Link>
+
+          <Link
+            to={(e) => handleLogout(e)}
+            className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+          >
+            Logout
           </Link>
         </div>
       </div>
