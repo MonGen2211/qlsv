@@ -7,6 +7,8 @@ import departmentRoutes from "./routes/department.routes.js";
 import subjectRoutes from "./routes/subject.routes.js";
 import courseRoutes from "./routes/course.routes.js";
 import courseRegisterRoutes from "./routes/courseRegister.routes.js";
+
+import cors from "cors";
 const app = express();
 app.use(express.json());
 app.use(cookieParser());

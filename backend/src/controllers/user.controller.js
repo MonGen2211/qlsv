@@ -144,7 +144,7 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     res.cookie("jwt", "", { maxAge: 0 });
-    return res.status(200).json({ message: "Logou Successfully" });
+    return res.status(200).json({ message: "Logout Successfully" });
   } catch (error) {
     console.log("Error in Logout Controller:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -158,9 +158,55 @@ export const checkAuth = async (req, res) => {
       res.status(403).json({ message: "Urthorized" });
     }
 
-    res.send(200).json(user);
+    res.status(200).json({ user: user });
   } catch (error) {
     console.log("Error in checkAuth Controller: ", error.message);
     res.status(500).json({ message: "Iternal Server Error" });
+  }
+};
+
+export const getUsers = async (req, res) => {
+  const role = req.params.role;
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const item_per_page = parseInt(req.query.item_per_page) || 2;
+
+    const skip = (page - 1) * item_per_page;
+
+    const [users, total] = await Promise.all([
+      User.find({ role: role }).skip(skip).limit(item_per_page),
+      User.countDocuments({ role: role }),
+    ]);
+    const totalPages = Math.ceil(total / item_per_page);
+
+    res.status(200).json({
+      user: users,
+      pagination: {
+        total,
+        totalPages,
+        currentPage: page,
+        item_per_page,
+      },
+    });
+  } catch (error) {
+    console.log("Error in getUser Controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  const { id: userId } = req.params;
+  const data = req.body;
+  try {
+    console.log(userId);
+    console.log(data);
+    const updateUser = await Student.findByIdAndUpdate(userId, data, {
+      new: true,
+    });
+
+    res.status(200).json({ user: updateUser });
+  } catch (error) {
+    console.log("Error in updateStudent Controller: ", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };

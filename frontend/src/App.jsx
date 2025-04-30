@@ -1,4 +1,4 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
@@ -11,30 +11,54 @@ import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
 
 function App() {
-  const { authUser, checkAuth } = useAuthStore();
+  const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  console.log(authUser);
+  if (isCheckingAuth && !authUser)
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div class="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-blue-600" />
+      </div>
+    );
+
   return (
     <>
       <Navbar />
       <Routes>
-        <Route path="/signup" element={<SginupPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/"
+          element={authUser ? <HomePage /> : <Navigate to="/login" />}
+        />
 
-        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/login"
+          element={!authUser ? <LoginPage /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/signup"
+          element={authUser ? <HomePage /> : <Navigate to="/signup" />}
+        />
 
         {/* StudentPage */}
-        <Route path="/student" element={<StudentPage />} />
+        <Route
+          path="/student"
+          element={authUser ? <StudentPage /> : <Navigate to="/login" />}
+        />
 
         {/* SubjectPage */}
-        <Route path="/subject" element={<SubjectPage />} />
+        <Route
+          path="/subject"
+          element={authUser ? <SubjectPage /> : <Navigate to="/login" />}
+        />
 
         {/* CoursePage */}
-        <Route path="/course" element={<CoursePage />} />
+        <Route
+          path="/course"
+          element={authUser ? <CoursePage /> : <Navigate to="/login" />}
+        />
       </Routes>
     </>
   );

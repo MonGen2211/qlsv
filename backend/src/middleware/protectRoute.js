@@ -3,6 +3,9 @@ import { User } from "../models/user.model.js";
 export const protectRoute = async (req, res, next) => {
   try {
     const token = req.cookies.jwt;
+    if (!token) {
+      return res.status(200).json({ message: "You need to login first" });
+    }
     const decode = jwt.decode(token, process.env.JWT_SECRET);
     const userId = decode.userId;
 
