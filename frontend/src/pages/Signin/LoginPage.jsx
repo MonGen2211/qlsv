@@ -10,13 +10,6 @@ const LoginPage = () => {
     password: "",
   });
 
-  // const validateForm = () => {
-  //   if (!formData.email.trim()) return toast.error("email is required");
-  //   if (!formData.password) return toast.error("password is required");
-
-  //   return true;
-  // };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     login(formData);

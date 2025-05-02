@@ -134,7 +134,7 @@ export const login = async (req, res) => {
     }
 
     generateToken(user._id, res);
-    res.status(200).json(user);
+    res.status(200).json({ user: user });
   } catch (error) {
     console.log("Error in Login controller:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -198,8 +198,6 @@ export const updateUser = async (req, res) => {
   const { id: userId } = req.params;
   const data = req.body;
   try {
-    console.log(userId);
-    console.log(data);
     const updateUser = await Student.findByIdAndUpdate(userId, data, {
       new: true,
     });
@@ -207,6 +205,20 @@ export const updateUser = async (req, res) => {
     res.status(200).json({ user: updateUser });
   } catch (error) {
     console.log("Error in updateStudent Controller: ", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  const { id: userId } = req.params;
+  try {
+    await User.findByIdAndDelete(userId, {
+      new: true,
+    });
+
+    res.json(200).json({ message: "Delete User Successfully" });
+  } catch (error) {
+    console.log("Error in deleteUser: ", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

@@ -13,6 +13,7 @@ export const useAuthStore = create((set) => ({
   isLoggingOut: false,
   isGetStudent: false,
   isEditStudent: false,
+  isDeleteStudent: false,
   // setup state
   checkAuth: async () => {
     set({ isCheckingAuth: true });
@@ -32,6 +33,7 @@ export const useAuthStore = create((set) => ({
     try {
       const res = await axiosInstance.post("/user/login", data);
       set({ authUser: res.data });
+      toast.success("Login Successfully");
     } catch (error) {
       // console.log(`Error in checkAuth ${error}`);
       toast.error(error.response.data.message);
@@ -78,6 +80,18 @@ export const useAuthStore = create((set) => ({
       set({ authUser: null });
     } finally {
       set({ isEditStudent: false });
+    }
+  },
+
+  deleteStudent: async (id) => {
+    set({ isDeleteStudent: true });
+    try {
+      const res = axiosInstance.delete(`/user/delete/${id}`);
+      toast.success(res.data);
+    } catch (error) {
+      toast.error(error.response.data);
+    } finally {
+      set({ isDeleteStudent: false });
     }
   },
 }));
