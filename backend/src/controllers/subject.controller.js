@@ -23,7 +23,10 @@ export const createSubject = async (req, res) => {
 
     await newSubject.save();
 
-    res.status(201).json(newSubject);
+    res.status(201).json({
+      message: "Create Successfully",
+      subject: newSubject,
+    });
   } catch (error) {
     console.log("Error in createSubject controller:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
@@ -55,7 +58,7 @@ export const getSubject = async (req, res) => {
       const totalPages = Math.ceil(total / item_per_page);
 
       return res.status(200).json({
-        data: subjects,
+        subject: subjects,
         pagination: {
           total,
           totalPages,
@@ -77,7 +80,7 @@ export const getSubject = async (req, res) => {
     }
     Subject.countDocuments();
     return res.status(200).json({
-      data: subjects,
+      subject: subjects,
       pagination: {
         total,
         totalPages,
@@ -108,6 +111,21 @@ export const deleteSubject = async (req, res) => {
     res.status(200).json({ message: "Delete Subject Successfully" });
   } catch (error) {
     console.log("Error in deleteSubject controller:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const updateSubject = async (req, res) => {
+  const { id: subject_id } = req.params;
+  const data = req.body;
+  try {
+    const updateSubject = await Subject.findByIdAndUpdate(subject_id, data, {
+      new: true,
+    });
+
+    res.status(200).json({ message: "Update Subject Successfully" });
+  } catch (error) {
+    console.log("Error in updateSubject Controller: ", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
