@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
+import { useAuthStore } from "../store/useAuthStore";
 
 const CreateSubject = () => {
+  const { createSubject } = useAuthStore();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    number_of_credit: "",
+  });
+
   const [isOpenModalCreate, setisOpenModalCreate] = useState(false);
 
   useEffect(() => {
     setisOpenModalCreate(false);
   }, []);
 
+  const handleSubmit = () => {
+    createSubject(formData);
+  };
   return (
     <>
       <div className="flex  w-full max-md:block">
@@ -47,65 +58,57 @@ const CreateSubject = () => {
             </h2>
 
             {/* Form */}
-            <form className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label
-                  htmlFor="subject_name"
+                  htmlFor="name"
                   className="block  font-medium text-gray-700 text-lg"
                 >
                   Subject Name
                 </label>
                 <input
                   type="text"
-                  id="subject_name"
-                  name="subject_name"
+                  id="name"
+                  name="name"
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Gen"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      name: e.target.value,
+                    })
+                  }
                 />
               </div>
 
               <div>
                 <label
-                  htmlFor="subject_credit"
+                  htmlFor="number_of_credit"
                   className="block font-medium text-gray-700 text-lg"
                 >
                   Subject Credits
                 </label>
                 <input
                   type="text"
-                  id="subject_credit"
-                  name="subject_credit"
+                  id="number_of_credit"
+                  name="number_of_credit"
                   required
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   placeholder=""
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      number_of_credit: e.target.value,
+                    })
+                  }
                 />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="subject_class"
-                  className="block  font-medium text-gray-700 mb-1 text-lg"
-                >
-                  SUBJECT CLASS
-                </label>
-                <select
-                  id="subject_class"
-                  name="subject_class"
-                  className="block w-full p-2 border border-gray-300 rounded-md shadow-sm 
-               focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">-- SUBJECT CLASS --</option>
-                  <option value="DCT120C1">DCT120C1</option>
-                  <option value="DCT120C2">DCT120C2</option>
-                  <option value="DCT120C3">DCT120C3</option>
-                </select>
               </div>
 
               <button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
               >
-                Create Student
+                Create Subject
               </button>
             </form>
           </div>

@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { useAuthStore } from "../store/useAuthStore";
 
-const EditSubject = () => {
+const EditSubject = ({ subject }) => {
   const [isOpenModalEdit, setIsOpenModalEdit] = useState(false);
-
+  const { editSubject } = useAuthStore();
   useEffect(() => {
     setIsOpenModalEdit(false);
   }, []);
+
+  const [formData, setFormData] = useState({
+    name: subject.name,
+    number_of_credit: subject.number_of_credit,
+  });
+
+  const handleSubmit = () => {
+    editSubject(subject._id, formData);
+  };
 
   return (
     <>
@@ -42,21 +52,24 @@ const EditSubject = () => {
           </h2>
 
           {/* Form */}
-          <form className="space-y-4 text-left">
+          <form onSubmit={handleSubmit} className="space-y-4 text-left">
             <div>
               <label
-                htmlFor="subject_name"
+                htmlFor="name"
                 className="block  font-medium text-gray-700 text-xl"
               >
                 Subject Name
               </label>
               <input
                 type="text"
-                id="subject_name"
-                name="subject_name"
-                required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Gen"
+                id="name"
+                name="name"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500
+                 focus:border-blue-500"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
               />
             </div>
 
@@ -69,32 +82,15 @@ const EditSubject = () => {
               </label>
               <input
                 type="text"
-                id="subject_credit"
-                name="subject_credit"
-                required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                id="number_of_credit"
+                name="number_of_credit"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500
+                focus:border-blue-500"
+                value={formData.number_of_credit}
+                onChange={(e) =>
+                  setFormData({ ...formData, number_of_credit: e.target.value })
+                }
               />
-            </div>
-
-            <div>
-              <label
-                htmlFor="subject_class"
-                className="block  font-medium text-gray-700 mb-1 text-xl"
-              >
-                SUBJECT CLASS
-              </label>
-              <select
-                id="subject_class"
-                name="subject_class"
-                className="block w-full p-2 border border-gray-300 rounded-md shadow-sm 
-             focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
-              >
-                <option value="">-- Subject Class --</option>
-                <option value="DCT120C1">DCT120C1</option>
-                <option value="DCT120C2">DCT120C2</option>
-                <option value="DCT120C3">DCT120C3</option>
-              </select>
             </div>
 
             <button

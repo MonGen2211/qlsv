@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useAuthStore } from "../store/useAuthStore";
 
-const DeleteSubject = () => {
+const DeleteSubject = ({ subject }) => {
   const [isOpenModalDelete, setIsOpenModalDelete] = useState(false);
-
+  const { deleteSubject } = useAuthStore();
   useEffect(() => {
     setIsOpenModalDelete(false);
   }, []);
+
+  const handleDelete = () => {
+    deleteSubject(subject._id);
+    setIsOpenModalDelete(false);
+  };
 
   return (
     <>
@@ -75,6 +81,7 @@ const DeleteSubject = () => {
                 <button
                   type="button"
                   class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
+                  onClick={() => handleDelete()}
                 >
                   Delete
                 </button>
