@@ -4,6 +4,7 @@ import { User } from "./user.model.js";
 const teacherSchema = new mongoose.Schema({
   teacher_code: {
     type: String,
+    unique: true,
     required: true,
   },
 

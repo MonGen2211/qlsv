@@ -57,7 +57,13 @@ function App() {
         {/* CoursePage */}
         <Route
           path="/course"
-          element={authUser ? <CoursePage /> : <Navigate to="/login" />}
+          element={
+            authUser ? (
+              <CoursePage authUser={authUser} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
       </Routes>
     </>

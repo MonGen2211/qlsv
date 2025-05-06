@@ -14,7 +14,6 @@ export const protectRoute = async (req, res, next) => {
       res.status(400).json({ message: "You need to login first" });
     }
     req.user = user;
-
     next();
   } catch (error) {
     console.log("Error protectRoute middleware: ", error);

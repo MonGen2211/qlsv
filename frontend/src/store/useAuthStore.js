@@ -1,10 +1,12 @@
 import { create } from "zustand";
+
 import { axiosInstance } from "../lib/axios";
 import { toast } from "react-toastify";
 // import { axiosInstance } from "../lib/axios";
 
 export const useAuthStore = create((set) => ({
   authUser: null,
+  setAuthUser: (authUser) => set({ authUser }),
 
   students: [],
   pagination: {},
@@ -29,7 +31,7 @@ export const useAuthStore = create((set) => ({
   checkAuth: async () => {
     set({ isCheckingAuth: true });
     try {
-      const res = await axiosInstance.get("/user/checkAuth");
+      const res = await axiosInstance.get("/user/check/auth");
       set({ authUser: res.data.user });
     } catch (error) {
       toast.error(`Error in checkAuth ${error}`);
@@ -43,7 +45,7 @@ export const useAuthStore = create((set) => ({
     set({ isLoggingIn: true });
     try {
       const res = await axiosInstance.post("/user/login", data);
-      set({ authUser: res.data });
+      set({ authUser: res.data.user });
       toast.success("Login Successfully");
     } catch (error) {
       // console.log(`Error in checkAuth ${error}`);
@@ -107,6 +109,7 @@ export const useAuthStore = create((set) => ({
   },
   // todo:update late
   getTeachers: async (page) => {
+    set({ isGetTeacher: true });
     try {
       const res = await axiosInstance.get(`/user/Teacher?page=${page}`);
 
@@ -144,11 +147,12 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  editSubject: async (subject_id, data) => {
+  editSubject: async (subject_id, data, page) => {
     set({ isEditSubject: true });
     try {
       const res = await axiosInstance.put(`/subject/${subject_id}`, data);
       toast.success(res.data.message);
+      useAuthStore.getState().getSubjects(page);
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {

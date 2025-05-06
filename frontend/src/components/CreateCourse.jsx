@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
+import { useCourseStore } from "../store/useCourseStore";
 
-const CreateCourse = () => {
+const CreateCourse = ({ subjects, teachers }) => {
   const [isOpenModalCreate, setIsOpenModalCreate] = useState(false);
+  const { createCourse } = useCourseStore();
+  const [formData, setFormData] = useState({
+    teacher_code: "",
+    subject_code: "",
+  });
 
   useEffect(() => {
     setIsOpenModalCreate(false);
   }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createCourse(formData);
+    setIsOpenModalCreate(false);
+  };
 
   return (
     <>
@@ -53,7 +65,7 @@ const CreateCourse = () => {
                   htmlFor="student_id"
                   className="block  font-medium text-gray-700 text-xl"
                 >
-                  Student Name
+                  Teacher Name
                 </label>
 
                 <select
@@ -61,12 +73,16 @@ const CreateCourse = () => {
                   name="student_id"
                   className="block w-full p-2 border border-gray-300 rounded-md shadow-sm 
                focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  required
+                  onChange={(e) =>
+                    setFormData({ ...formData, teacher_code: e.target.value })
+                  }
                 >
-                  <option value="">Please Select Student</option>
-                  <option value="1">1 - Nguyễn Thị Bé Bảy</option>
-                  <option value="2">2 - Nguyễn Văn Tèo</option>
-                  <option value="3">3 - Cao Thị Mẫn</option>
+                  <option value="">Please Select Teacher</option>
+                  {teachers.map((teacher, index) => (
+                    <option key={index} value={teacher.teacher_code}>
+                      {teacher?.teacher_code} - {teacher?.fullname}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -82,18 +98,23 @@ const CreateCourse = () => {
                   name="subject_id"
                   className="block w-full p-2 border border-gray-300 rounded-md shadow-sm 
                focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  required
+                  onChange={(e) =>
+                    setFormData({ ...formData, subject_code: e.target.value })
+                  }
                 >
                   <option value="">Please Select Subject</option>
-                  <option value="1">1 - Nguyễn Thị Bé Bảy</option>
-                  <option value="2">2 - Nguyễn Văn Tèo</option>
-                  <option value="3">3 - Cao Thị Mẫn</option>
+                  {subjects.map((subject, index) => (
+                    <option key={index} value={subject.subject_code}>
+                      {subject.subject_code} - {subject.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
               <button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
+                onClick={(e) => handleSubmit(e)}
               >
                 Create Course
               </button>
