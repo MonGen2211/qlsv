@@ -3,13 +3,13 @@ import mongoose from "mongoose";
 const courseSchema = new mongoose.Schema(
   {
     teacher_code: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "Teacher", // Tham chiếu tới collection Department
       required: true,
     },
 
     subject_code: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "Subject",
       required: true,
     },

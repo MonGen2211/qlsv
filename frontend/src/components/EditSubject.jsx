@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 
-const EditSubject = ({ subject }) => {
+const EditSubject = ({ subject, pagination }) => {
   const [isOpenModalEdit, setIsOpenModalEdit] = useState(false);
   const { editSubject } = useAuthStore();
+  const page = pagination.currentPage;
   useEffect(() => {
     setIsOpenModalEdit(false);
   }, []);
@@ -13,8 +14,10 @@ const EditSubject = ({ subject }) => {
     number_of_credit: subject.number_of_credit,
   });
 
-  const handleSubmit = () => {
-    editSubject(subject._id, formData);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    editSubject(subject._id, formData, page);
+    setIsOpenModalEdit(false);
   };
 
   return (
@@ -52,7 +55,7 @@ const EditSubject = ({ subject }) => {
           </h2>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4 text-left">
+          <form className="space-y-4 text-left">
             <div>
               <label
                 htmlFor="name"
@@ -96,6 +99,7 @@ const EditSubject = ({ subject }) => {
             <button
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
+              onClick={(e) => handleSubmit(e)}
             >
               Update Subject
             </button>

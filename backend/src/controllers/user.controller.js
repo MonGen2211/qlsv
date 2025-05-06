@@ -87,7 +87,7 @@ export const signup = async (req, res) => {
       res.status(201).json(newAdmin);
     }
   } catch (error) {
-    console.log("Error in signup contronller", error);
+    console.log("Error in signup contronller", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -117,26 +117,28 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     if (!email || !password) {
-      res.status(400).json({ message: "Please fill all provided" });
+      return res.status(400).json({ message: "Please fill all provided" });
     }
 
     // check email
     const user = await User.findOne({ email: email });
 
     if (!user) {
-      res.status(400).json({ message: "Email doses not have in database" });
+      return res
+        .status(400)
+        .json({ message: "Email doses not have in database" });
     }
 
     const isPassword = bcrypt.compareSync(password, user.password);
     if (!isPassword) {
-      res.status(400).json({ message: "password was wrong" });
+      return res.status(400).json({ message: "password was wrong" });
     }
 
     generateToken(user._id, res);
-    res.status(200).json({ user: user });
+    return res.status(200).json({ user: user });
   } catch (error) {
     console.log("Error in Login controller:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -153,6 +155,8 @@ export const logout = async (req, res) => {
 export const checkAuth = async (req, res) => {
   try {
     const user = req.user;
+
+    console.log(1);
     if (!user) {
       res.status(403).json({ message: "Urthorized" });
     }

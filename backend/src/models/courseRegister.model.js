@@ -9,8 +9,8 @@ const courseRegisterSchema = new mongoose.Schema(
     },
 
     course_code: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "course",
+      type: String,
+      ref: "Course",
       required: true,
     },
 

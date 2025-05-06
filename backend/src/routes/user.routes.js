@@ -9,11 +9,7 @@ import {
   updateProfilefic,
   updateUser,
 } from "../controllers/user.controller.js";
-import {
-  protectRoute,
-  requireAdmin,
-  requireStudent,
-} from "../middleware/protectRoute.js";
+import { protectRoute, requireAdmin } from "../middleware/protectRoute.js";
 
 const router = express.Router();
 
@@ -28,6 +24,6 @@ router.put("/", protectRoute, updateProfilefic);
 router.put("/:id", protectRoute, updateUser);
 router.delete("/delete/:id", protectRoute, requireAdmin, deleteUser);
 
-router.get("/checkAuth", protectRoute, checkAuth);
+router.get("/check/auth", protectRoute, checkAuth);
 
 export default router;

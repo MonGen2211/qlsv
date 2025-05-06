@@ -39,7 +39,7 @@ const SubjectPage = () => {
               <td className="max-md:hidden">{subject.number_of_credit}</td>
               <td className="relative h-16 w-auto p-0 text-center align-middle">
                 <div className="hidden sm:flex gap-2 justify-center items-center">
-                  <EditSubject subject={subject} />
+                  <EditSubject subject={subject} pagination={pagination} />
                   <DeleteSubject subject={subject} />
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center sm:hidden">
