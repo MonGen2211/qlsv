@@ -4,9 +4,13 @@ import Footer from "../../components/Footer";
 import { useCourseStore } from "../../store/useCourseStore";
 import RegisterCourse from "../../components/RegisterCourse";
 import { useAuthStore } from "../../store/useAuthStore";
+import EditCourseScore from "../../components/EditCourseScore";
+import DeleteCourse from "../../components/DeleteCourse";
 
-const CoursePage = () => {
+const CoursePage = ({ authUser }) => {
   const { getCourses, courses, isGettingCourses } = useCourseStore();
+
+  console.log();
 
   const {
     getSubjects,
@@ -59,14 +63,14 @@ const CoursePage = () => {
 
               <td className="relative h-16 w-auto p-0 text-center align-middle">
                 <div className="hidden sm:flex gap-2 justify-center items-center">
-                  {/* {authUser?.role === "Admin" ? ( */}
-                  {/* <>
-                    <EditCourseScore />
-                    <DeleteCourse />
-                  </> */}
-                  {/* ) : ( */}
-                  <RegisterCourse course={course} />
-                  {/* )} */}
+                  {authUser.role === "Admin" ? (
+                    <>
+                      <EditCourseScore />
+                      <DeleteCourse />
+                    </>
+                  ) : (
+                    <RegisterCourse course={course} />
+                  )}
                 </div>
 
                 <div className="absolute inset-0 flex items-center justify-center sm:hidden">

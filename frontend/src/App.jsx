@@ -9,6 +9,7 @@ import LoginPage from "./pages/Signin/LoginPage";
 import SginupPage from "./pages/Signin/SginupPage";
 import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
+import CourseRegisterPage from "./pages/CourseRegister/CourseRegisterPage";
 
 function App() {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -37,10 +38,6 @@ function App() {
           path="/login"
           element={!authUser ? <LoginPage /> : <Navigate to="/" />}
         />
-        <Route
-          path="/signup"
-          element={authUser ? <HomePage /> : <Navigate to="/signup" />}
-        />
 
         {/* StudentPage */}
         <Route
@@ -64,6 +61,11 @@ function App() {
               <Navigate to="/login" />
             )
           }
+        />
+
+        <Route
+          path="/courseRegister"
+          element={authUser ? <CourseRegisterPage /> : <Navigate to="/login" />}
         />
       </Routes>
     </>
