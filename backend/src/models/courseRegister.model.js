@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const courseRegisterSchema = new mongoose.Schema(
   {
-    student_id: {
-      type: mongoose.Schema.Types.ObjectId,
+    student_code: {
+      type: String,
       ref: "user",
       required: true,
     },
