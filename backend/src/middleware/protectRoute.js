@@ -53,11 +53,26 @@ export const requireStudent = async (req, res, next) => {
   }
 };
 
+export const requireTeacher = async (req, res, next) => {
+  try {
+    const user = req.user;
+    if (user.role !== "Teacher") {
+      res
+        .status(403)
+        .json({ message: "Unauthornized - You must be a Student" });
+    }
+    next();
+  } catch (error) {
+    console.log("Error in requireTeacher middleware: ", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 export const requireStudentOrAdmin = async (req, res, next) => {
   try {
     const user = req.user;
 
-    if (user.role !== "Student" || user.role !== "Admin") {
+    if (user.role === "Teacher") {
       res
         .status(403)
         .json({ message: "Unauthornized - You must be a Student or Admin" });
